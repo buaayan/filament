@@ -1,0 +1,555 @@
+diff --git a/filament/CMakeLists.txt b/filament/CMakeLists.txt
+index 44c58e11..6e9f0701 100644
+--- a/filament/CMakeLists.txt
++++ b/filament/CMakeLists.txt
+@@ -225,7 +225,7 @@ if (DEFINED RESGEN_SOURCE_FLAGS)
+     set_source_files_properties(${RESGEN_SOURCE} PROPERTIES COMPILE_FLAGS ${RESGEN_SOURCE_FLAGS})
+ endif()
+ 
+-set(DATA_BINS)
++set(DATA_BINS src/temporary/MorphCalculater.cpp src/temporary/MorphCalculater.h)
+ file(MAKE_DIRECTORY "${GENERATION_ROOT}/generated/data/")
+ 
+ set(output_path "${GENERATION_ROOT}/generated/data/dfg.inc")
+diff --git a/filament/include/filament/RenderableManager.h b/filament/include/filament/RenderableManager.h
+index e1bc7f03..2107664a 100644
+--- a/filament/include/filament/RenderableManager.h
++++ b/filament/include/filament/RenderableManager.h
+@@ -24,6 +24,7 @@
+ #include <filament/MaterialInstance.h>
+ #include <filament/Renderer.h>
+ #include <filament/FilamentAPI.h>
++#include <../../src/temporary/MorphCalculater.h>
+ 
+ #include <utils/compiler.h>
+ #include <utils/Entity.h>
+@@ -35,6 +36,8 @@
+ 
+ #include <type_traits>
+ 
++#include "../../../third_party/cgltf/cgltf.h"
++
+ namespace filament {
+ 
+ namespace details {
+@@ -367,6 +370,9 @@ public:
+      * The renderable must be built with morphing enabled, see Builder::morphing().
+      */
+     void setMorphWeights(Instance instance, math::float4 const& weights) noexcept;
++    void setMorphInstance(Instance instance) noexcept;
++    void setMorphData(Instance instance, const cgltf_primitive* primitive) noexcept;
++    void updateCpuMorphWeights(const std::vector<float>& weights) noexcept;
+ 
+     /**
+      * Gets the bounding box used for frustum culling.
+diff --git a/filament/src/components/RenderableManager.cpp b/filament/src/components/RenderableManager.cpp
+index 2b83fb5e..3496f95b 100644
+--- a/filament/src/components/RenderableManager.cpp
++++ b/filament/src/components/RenderableManager.cpp
+@@ -28,6 +28,7 @@
+ 
+ #include <utils/Log.h>
+ #include <utils/Panic.h>
++#include <backend/BufferDescriptor.h>
+ 
+ using namespace filament::math;
+ using namespace utils;
+@@ -507,6 +508,31 @@ void FRenderableManager::setMorphWeights(Instance ci, const float4& weights) noe
+     }
+ }
+ 
++void FRenderableManager::setMorphInstance(filament::details::FRenderableManager::Instance instance) noexcept{
++    if (!mMorphCalculater) {
++        mMorphInstance = instance;
++    }
++}
++
++void FRenderableManager::setMorphData(filament::details::FRenderableManager::Instance instance,
++        const cgltf_primitive *primitive) noexcept{
++    if (!mMorphCalculater) {
++        mMorphCalculater = new MorphCalculater(primitive);
++        mMorphCalculater->init();
++    }
++}
++
++void FRenderableManager::updateCpuMorphWeights(
++        const std::vector<float> &weights) noexcept {
++//    if (mMorphCalculater) {
++//        auto updatedData = mMorphCalculater->updatePosition(weights);
++//        auto primitives = getRenderPrimitives(mMorphInstance, 0);
++//        backend::BufferDescriptor desc((void*)updatedData.data(), updatedData.size() * sizeof(math::float3));
++//        mEngine.getDriverApi().updateVertexBuffer()
++//        utils::Slice<FRenderPrimitive> sp = mManager[mMorphInstance].primitives;
++//    }
++}
++
+ void FRenderableManager::makeBone(PerRenderableUibBone* UTILS_RESTRICT out, mat4f const& t) noexcept {
+     mat4f m(t);
+ 
+@@ -632,4 +658,17 @@ void RenderableManager::setMorphWeights(Instance instance, float4 const& weights
+     upcast(this)->setMorphWeights(instance, weights);
+ }
+ 
++void RenderableManager::setMorphInstance(filament::RenderableManager::Instance instance) noexcept {
++    upcast(this)->setMorphInstance(instance);
++}
++
++void RenderableManager::setMorphData(filament::RenderableManager::Instance instance,
++        const cgltf_primitive *primitive) noexcept {
++    upcast(this)->setMorphData(instance, primitive);
++}
++
++void RenderableManager::updateCpuMorphWeights(const std::vector<float> &weights) noexcept {
++    upcast(this)->updateCpuMorphWeights(weights);
++}
++
+ } // namespace filament
+diff --git a/filament/src/components/RenderableManager.h b/filament/src/components/RenderableManager.h
+index 70b8eeb0..b5e4465e 100644
+--- a/filament/src/components/RenderableManager.h
++++ b/filament/src/components/RenderableManager.h
+@@ -27,6 +27,7 @@
+ 
+ #include <filament/Box.h>
+ #include <filament/RenderableManager.h>
++//#include <>
+ 
+ #include <private/filament/UibGenerator.h>
+ 
+@@ -108,6 +109,9 @@ public:
+     inline void setBones(Instance instance, Bone const* transforms, size_t boneCount, size_t offset = 0) noexcept;
+     inline void setBones(Instance instance, math::mat4f const* transforms, size_t boneCount, size_t offset = 0) noexcept;
+     inline void setMorphWeights(Instance instance, const math::float4& weights) noexcept;
++    inline void setMorphInstance(Instance instance) noexcept;
++    inline void setMorphData(Instance instance, const cgltf_primitive* primitive) noexcept;
++    inline void updateCpuMorphWeights(const std::vector<float>& weights) noexcept;
+ 
+ 
+     inline bool isShadowCaster(Instance instance) const noexcept;
+@@ -205,6 +209,8 @@ private:
+ 
+     Sim mManager;
+     FEngine& mEngine;
++    Instance mMorphInstance;
++    MorphCalculater* mMorphCalculater = nullptr;
+ };
+ 
+ FILAMENT_UPCAST(RenderableManager)
+diff --git a/libs/gltfio/src/AssetLoader.cpp b/libs/gltfio/src/AssetLoader.cpp
+index bccb0eb2..9e2fde5d 100644
+--- a/libs/gltfio/src/AssetLoader.cpp
++++ b/libs/gltfio/src/AssetLoader.cpp
+@@ -360,6 +360,11 @@ void FAssetLoader::createRenderable(const cgltf_node* node, Entity entity) {
+             continue;
+         }
+ 
++        if (inputPrim->targets_count > 4) {
++            mResult->mMorphPrimitives.push_back(inputPrim);
++            mResult->mMorphVertexBuffers.push_back(outputPrim->vertices);
++        }
++
+         // Expand the object-space bounding box.
+         aabb.min = min(outputPrim->aabb.min, aabb.min);
+         aabb.max = max(outputPrim->aabb.max, aabb.max);
+@@ -371,7 +376,7 @@ void FAssetLoader::createRenderable(const cgltf_node* node, Entity entity) {
+         builder.geometry(index, primType, outputPrim->vertices, outputPrim->indices);
+     }
+ 
+-    if (numMorphTargets > 0) {
++    if (numMorphTargets > 0 && numMorphTargets <= 4) {
+         builder.morphing(true);
+     }
+ 
+@@ -415,12 +420,17 @@ void FAssetLoader::createRenderable(const cgltf_node* node, Entity entity) {
+     // it actually has morph targets. If it has morphing enabled then the default weights are 0. If
+     // node weights are provided, they override the ones specified on the mesh.
+     if (numMorphTargets > 0) {
+-        RenderableManager::Instance renderable = mRenderableManager.getInstance(entity);
+-        float4 weights(0, 0, 0, 0);
+-        for (cgltf_size i = 0; i < std::min(cgltf_size(4), node->weights_count); ++i) {
+-            weights[i] = node->weights[i];
++        if (numMorphTargets <= 4) {
++            RenderableManager::Instance renderable = mRenderableManager.getInstance(entity);
++            float4 weights(0, 0, 0, 0);
++            for (cgltf_size i = 0; i < std::min(cgltf_size(4), node->weights_count); ++i) {
++                weights[i] = node->weights[i];
++            }
++            mRenderableManager.setMorphWeights(renderable, weights);
++        } else {
++            RenderableManager::Instance renderable = mRenderableManager.getInstance(entity);
++            mRenderableManager.setMorphInstance(renderable);
+         }
+-        mRenderableManager.setMorphWeights(renderable, weights);
+     }
+ }
+ 
+@@ -542,50 +552,53 @@ bool FAssetLoader::createPrimitive(const cgltf_primitive* inPrim, Primitive* out
+         vbb.normalized(semantic, inputAccessor->normalized);
+     }
+ 
+-    const cgltf_size targetsCount = std::min(cgltf_size(4), inPrim->targets_count);
++    const cgltf_size targetsCount = inPrim->targets_count;
++    const bool useCpuMorph = targetsCount > 4;
++//    const bool useCpuMorph = false;
+     constexpr int baseTangentsAttr = (int) VertexAttribute::MORPH_TANGENTS_0;
+     constexpr int basePositionAttr = (int) VertexAttribute::MORPH_POSITION_0;
+ 
+-    for (cgltf_size targetIndex = 0; targetIndex < targetsCount; targetIndex++) {
+-        const cgltf_morph_target& morphTarget = inPrim->targets[targetIndex];
+-        for (cgltf_size aindex = 0; aindex < morphTarget.attributes_count; aindex++) {
+-            const cgltf_attribute& inputAttribute = morphTarget.attributes[aindex];
+-            const cgltf_accessor* inputAccessor = inputAttribute.data;
+-
+-            if (inputAttribute.type == cgltf_attribute_type_normal) {
+-                VertexAttribute attr = (VertexAttribute) (baseTangentsAttr + targetIndex);
+-                vbb.attribute(attr, slot++, VertexBuffer::AttributeType::SHORT4);
+-                vbb.normalized(attr);
+-                continue;
+-            }
+-
+-            if (inputAttribute.type == cgltf_attribute_type_tangent) {
+-                continue;
+-            }
+-
+-            if (inputAttribute.type != cgltf_attribute_type_position) {
+-                utils::slog.e << "Only positions, normals, and tangents can be morphed."
+-                        << utils::io::endl;
+-                return false;
+-            }
+-
+-            const float* minp = &inputAccessor->min[0];
+-            const float* maxp = &inputAccessor->max[0];
+-            outPrim->aabb.min = min(outPrim->aabb.min, float3(minp[0], minp[1], minp[2]));
+-            outPrim->aabb.max = max(outPrim->aabb.max, float3(maxp[0], maxp[1], maxp[2]));
++    if (!useCpuMorph) {
++        for (cgltf_size targetIndex = 0; targetIndex < targetsCount; targetIndex++) {
++            const cgltf_morph_target &morphTarget = inPrim->targets[targetIndex];
++            for (cgltf_size aindex = 0; aindex < morphTarget.attributes_count; aindex++) {
++                const cgltf_attribute &inputAttribute = morphTarget.attributes[aindex];
++                const cgltf_accessor *inputAccessor = inputAttribute.data;
++
++                if (inputAttribute.type == cgltf_attribute_type_normal) {
++                    VertexAttribute attr = (VertexAttribute) (baseTangentsAttr + targetIndex);
++                    vbb.attribute(attr, slot++, VertexBuffer::AttributeType::SHORT4);
++                    vbb.normalized(attr);
++                    continue;
++                }
+ 
+-            VertexBuffer::AttributeType atype;
+-            if (!getElementType(inputAccessor->type, inputAccessor->component_type, &atype)) {
+-                slog.e << "Unsupported accessor type in " << name << io::endl;
+-                return false;
++                if (inputAttribute.type == cgltf_attribute_type_tangent) {
++                    continue;
++                }
++
++                if (inputAttribute.type != cgltf_attribute_type_position) {
++                    utils::slog.e << "Only positions, normals, and tangents can be morphed."
++                                  << utils::io::endl;
++                    return false;
++                }
++
++                const float *minp = &inputAccessor->min[0];
++                const float *maxp = &inputAccessor->max[0];
++                outPrim->aabb.min = min(outPrim->aabb.min, float3(minp[0], minp[1], minp[2]));
++                outPrim->aabb.max = max(outPrim->aabb.max, float3(maxp[0], maxp[1], maxp[2]));
++
++                VertexBuffer::AttributeType atype;
++                if (!getElementType(inputAccessor->type, inputAccessor->component_type, &atype)) {
++                    slog.e << "Unsupported accessor type in " << name << io::endl;
++                    return false;
++                }
++
++                VertexAttribute attr = (VertexAttribute) (basePositionAttr + targetIndex);
++                vbb.attribute(attr, slot++, atype, 0, inputAccessor->stride);
++                vbb.normalized(attr, inputAccessor->normalized);
+             }
+-
+-            VertexAttribute attr = (VertexAttribute) (basePositionAttr + targetIndex);
+-            vbb.attribute(attr, slot++, atype, 0, inputAccessor->stride);
+-            vbb.normalized(attr, inputAccessor->normalized);
+         }
+     }
+-
+     vbb.vertexCount(vertexCount);
+ 
+     // If an ubershader is used, then we provide a single dummy buffer for all unfulfilled vertex
+@@ -675,51 +688,56 @@ bool FAssetLoader::createPrimitive(const cgltf_primitive* inPrim, Primitive* out
+             .generateTangents = false,
+             .sparseAccessor = (bool) inputAccessor->is_sparse,
+         });
++        if (useCpuMorph && inputAttribute.type == cgltf_attribute_type_position) {
++            mResult->mMorphVertexBufferBindings.push_back(mResult->mBufferBindings.back());
++        }
+     }
+ 
+-    for (cgltf_size targetIndex = 0; targetIndex < targetsCount; targetIndex++) {
+-        const cgltf_morph_target& morphTarget = inPrim->targets[targetIndex];
+-        for (cgltf_size aindex = 0; aindex < morphTarget.attributes_count; aindex++) {
+-            const cgltf_attribute& inputAttribute = morphTarget.attributes[aindex];
+-            const cgltf_accessor* inputAccessor = inputAttribute.data;
+-            const cgltf_buffer_view* bv = inputAccessor->buffer_view;
+-            if (inputAttribute.type == cgltf_attribute_type_normal) {
+-                mResult->mBufferBindings.push_back({
+-                    .uri = bv->buffer->uri,
+-                    .totalSize = uint32_t(bv->buffer->size),
+-                    .bufferIndex = uint8_t(slot++),
+-                    .vertexBuffer = vertices,
+-                    .indexBuffer = nullptr,
+-                    .convertBytesToShorts = false,
+-                    .generateTrivialIndices = false,
+-                    .generateDummyData = false,
+-                    .generateTangents = true,
+-                    .sparseAccessor = (bool) inputAccessor->is_sparse,
+-                    .isMorphTarget = true,
+-                    .morphTargetIndex = (uint8_t) targetIndex,
+-                });
+-                continue;
+-            }
++    if (!useCpuMorph) {
++        for (cgltf_size targetIndex = 0; targetIndex < targetsCount; targetIndex++) {
++            const cgltf_morph_target &morphTarget = inPrim->targets[targetIndex];
++            for (cgltf_size aindex = 0; aindex < morphTarget.attributes_count; aindex++) {
++                const cgltf_attribute &inputAttribute = morphTarget.attributes[aindex];
++                const cgltf_accessor *inputAccessor = inputAttribute.data;
++                const cgltf_buffer_view *bv = inputAccessor->buffer_view;
++                if (inputAttribute.type == cgltf_attribute_type_normal) {
++                    mResult->mBufferBindings.push_back({
++                                                               .uri = bv->buffer->uri,
++                                                               .totalSize = uint32_t(bv->buffer->size),
++                                                               .bufferIndex = uint8_t(slot++),
++                                                               .vertexBuffer = vertices,
++                                                               .indexBuffer = nullptr,
++                                                               .convertBytesToShorts = false,
++                                                               .generateTrivialIndices = false,
++                                                               .generateDummyData = false,
++                                                               .generateTangents = true,
++                                                               .sparseAccessor = (bool) inputAccessor->is_sparse,
++                                                               .isMorphTarget = true,
++                                                               .morphTargetIndex = (uint8_t) targetIndex,
++                                                       });
++                    continue;
++                }
+ 
+-            if (inputAttribute.type == cgltf_attribute_type_tangent) {
+-                continue;
+-            }
++                if (inputAttribute.type == cgltf_attribute_type_tangent) {
++                    continue;
++                }
+ 
+-            mResult->mBufferBindings.push_back({
+-                .uri = bv->buffer->uri,
+-                .totalSize = uint32_t(bv->buffer->size),
+-                .bufferIndex = uint8_t(slot++),
+-                .offset = computeBindingOffset(inputAccessor),
+-                .size = computeBindingSize(inputAccessor),
+-                .data = &bv->buffer->data,
+-                .vertexBuffer = vertices,
+-                .indexBuffer = nullptr,
+-                .convertBytesToShorts = false,
+-                .generateTrivialIndices = false,
+-                .generateDummyData = false,
+-                .generateTangents = false,
+-                .sparseAccessor = (bool) inputAccessor->is_sparse,
+-            });
++                mResult->mBufferBindings.push_back({
++                                                           .uri = bv->buffer->uri,
++                                                           .totalSize = uint32_t(bv->buffer->size),
++                                                           .bufferIndex = uint8_t(slot++),
++                                                           .offset = computeBindingOffset(inputAccessor),
++                                                           .size = computeBindingSize(inputAccessor),
++                                                           .data = &bv->buffer->data,
++                                                           .vertexBuffer = vertices,
++                                                           .indexBuffer = nullptr,
++                                                           .convertBytesToShorts = false,
++                                                           .generateTrivialIndices = false,
++                                                           .generateDummyData = false,
++                                                           .generateTangents = false,
++                                                           .sparseAccessor = (bool) inputAccessor->is_sparse,
++                                                   });
++            }
+         }
+     }
+ 
+diff --git a/libs/gltfio/src/FFilamentAsset.h b/libs/gltfio/src/FFilamentAsset.h
+index b19fee9f..d8f76e7c 100644
+--- a/libs/gltfio/src/FFilamentAsset.h
++++ b/libs/gltfio/src/FFilamentAsset.h
+@@ -38,6 +38,7 @@
+ 
+ #include "upcast.h"
+ #include "Wireframe.h"
++#include "../../../filament/src/temporary/MorphCalculater.h"
+ 
+ #include <tsl/robin_map.h>
+ 
+@@ -217,6 +218,12 @@ struct FFilamentAsset : public FilamentAsset {
+     tsl::robin_map<const cgltf_node*, utils::Entity> mNodeMap;
+     tsl::robin_map<const cgltf_primitive*, filament::VertexBuffer*> mPrimMap;
+     tsl::robin_map<const cgltf_accessor*, std::vector<filament::VertexBuffer*>> mAccessorMap;
++
++    std::vector<const cgltf_primitive*> mMorphPrimitives;
++    std::vector<filament::VertexBuffer*> mMorphVertexBuffers;
++    std::vector<BufferBinding> mMorphVertexBufferBindings;
++    std::vector<filament::MorphCalculater*> mMorphCalculaters;
++
+ };
+ 
+ FILAMENT_UPCAST(FilamentAsset)
+diff --git a/libs/gltfio/src/ResourceLoader.cpp b/libs/gltfio/src/ResourceLoader.cpp
+index 763f1236..a7881055 100644
+--- a/libs/gltfio/src/ResourceLoader.cpp
++++ b/libs/gltfio/src/ResourceLoader.cpp
+@@ -219,6 +219,29 @@ bool ResourceLoader::loadResources(FilamentAsset* asset) {
+         updateBoundingBoxes(fasset);
+     }
+ 
++//    cgltf_primitive* prim_ptr = nullptr;
++//    bool find_morph_prim = false;
++//    for (size_t meshIdx = 0; meshIdx < gltf->meshes_count; meshIdx++) {
++//        auto& mesh = gltf->meshes[meshIdx];
++//        for (size_t primIdx = 0; primIdx < mesh.primitives_count; primIdx++) {
++//            auto& prim = mesh.primitives[primIdx];
++//            if (prim.targets_count > 4) {
++//                prim_ptr = &prim;
++//                find_morph_prim = true;
++//                break;
++//            }
++//        }
++//        if (find_morph_prim) {
++//            break;
++//        }
++//    }
++//
++//    if (find_morph_prim) {
++//        auto &renderableManager = asset->getEngine()->getRenderableManager();
++//        RenderableManager::Instance renderable = renderableManager.getInstance(*asset->getEntities());
++//        renderableManager.setMorphData(renderable, prim_ptr);
++//    }
++
+     // Upload data to the GPU.
+     const BufferBinding* bindings = asset->getBufferBindings();
+     bool needsTangents = false;
+diff --git a/samples/app/FilamentApp.cpp b/samples/app/FilamentApp.cpp
+index 14a75a1d..1534923c 100644
+--- a/samples/app/FilamentApp.cpp
++++ b/samples/app/FilamentApp.cpp
+@@ -374,6 +374,20 @@ void FilamentApp::run(const Config& config, SetupCallback setupCallback,
+             for (filament::View* offscreenView : mOffscreenViews) {
+                 renderer->render(offscreenView);
+             }
++//            //update morph weight
++//            auto& renderableManager = mEngine->getRenderableManager();
++//            static int count = 0;
++//            std::vector<float> weights(53);
++//            if (count < 10) {
++//                for (size_t i = 0; i < 53; i++) {
++//                    weights[i] = 0.1 * (float)count;
++//                }
++//                count++;
++//            } else {
++//                count = 0;
++//            }
++//            renderableManager.updateCpuMorphWeights(weights);
++
+             for (auto const& view : window->mViews) {
+                 renderer->render(view->getView());
+             }
+diff --git a/samples/gltf_viewer.cpp b/samples/gltf_viewer.cpp
+index 8fe97914..747fe514 100644
+--- a/samples/gltf_viewer.cpp
++++ b/samples/gltf_viewer.cpp
+@@ -28,6 +28,8 @@
+ #include <gltfio/FilamentAsset.h>
+ #include <gltfio/ResourceLoader.h>
+ #include <gltfio/SimpleViewer.h>
++#include <gltfio/../../src/upcast.h>
++#include "../libs/gltfio/src/AssetLoader.cpp"
+ 
+ #include <getopt/getopt.h>
+ 
+@@ -52,6 +54,7 @@ struct App {
+     MaterialProvider* materials;
+     MaterialSource materialSource = GENERATE_SHADERS;
+     bool actualSize = false;
++    size_t preFrameCount = 0;
+ };
+ 
+ static const char* DEFAULT_IBL = "venetian_crossroads_2k";
+@@ -137,7 +140,8 @@ int main(int argc, char** argv) {
+     app.config.iblDirectory = FilamentApp::getRootAssetsPath() + DEFAULT_IBL;
+ 
+     int option_index = handleCommandLineArguments(argc, argv, &app);
+-    utils::Path filename;
++    utils::Path filename("/Users/zhangyan62/Desktop/weather report/zophrac/scene.gltf");
++//    utils::Path filename;
+     int num_args = argc - option_index;
+     if (num_args >= 1) {
+         filename = argv[option_index];
+@@ -185,6 +189,12 @@ int main(int argc, char** argv) {
+         buffer.clear();
+         buffer.shrink_to_fit();
+ 
++        auto& primitives = upcast(app.asset)->mMorphPrimitives;
++        auto& calculaters = upcast(app.asset)->mMorphCalculaters;
++        for (size_t pi = 0; pi < primitives.size(); pi++) {
++            calculaters.push_back(new MorphCalculater(primitives[pi]));
++        }
++
+         if (!app.asset) {
+             std::cerr << "Unable to parse " << filename << std::endl;
+             exit(1);
+@@ -200,6 +210,13 @@ int main(int argc, char** argv) {
+         configuration.recomputeBoundingBoxes = false;
+         gltfio::ResourceLoader(configuration).loadResources(app.asset);
+ 
++        auto& calculaters = upcast(app.asset)->mMorphCalculaters;
++        for (size_t pi = 0; pi < calculaters.size(); pi++) {
++            if (calculaters[pi]) {
++                calculaters[pi]->init();
++            }
++        }
++
+         // Load animation data then free the source hierarchy.
+         app.asset->getAnimator();
+         app.asset->releaseSourceData();
+@@ -260,6 +277,29 @@ int main(int argc, char** argv) {
+         FilamentApp::get().setSidebarWidth(app.viewer->getSidebarWidth());
+     };
+ 
++    auto preRender = [&app](filament::Engine* engine, filament::View* view, filament::Scene* scene, filament::Renderer* renderer) {
++        if (app.preFrameCount > 100) {
++            app.preFrameCount = 0;
++        } else {
++            app.preFrameCount++;
++        }
++        auto& vertexBuffers = upcast(app.asset)->mMorphVertexBuffers;
++        auto& bindings = upcast(app.asset)->mMorphVertexBufferBindings;
++        for (size_t i = 0; i < vertexBuffers.size(); i++) {
++            auto& calculater = upcast(app.asset)->mMorphCalculaters[i];
++            std::vector<float> tempWeights(calculater->getMorphCount());
++            for (size_t j = 0; j < tempWeights.size(); j++) {
++                tempWeights[j] = app.preFrameCount * 0.01f;
++//                tempWeights[j] = 0.0f;
++            }
++//            tempWeights[10] = app.preFrameCount * 0.01f;
++            auto& binding = bindings[i];
++            auto attributeData = calculater->updatePosition(tempWeights);
++            backend::BufferDescriptor desc((void*)attributeData.data(), binding.size);
++            vertexBuffers[i]->setBufferAt(*app.engine, binding.bufferIndex, std::move(desc));
++        }
++    };
++
+     FilamentApp& filamentApp = FilamentApp::get();
+     filamentApp.animate(animate);
+ 
+@@ -270,7 +310,7 @@ int main(int argc, char** argv) {
+         loadResources(path);
+     });
+ 
+-    filamentApp.run(app.config, setup, cleanup, gui);
++    filamentApp.run(app.config, setup, cleanup, gui, preRender);
+ 
+     return 0;
+ }

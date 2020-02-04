@@ -29,6 +29,8 @@
 
 #include <utils/EntityManager.h>
 
+#include <string>
+
 #include "CameraManipulator.h"
 
 using namespace filament;
@@ -39,19 +41,23 @@ class FilamentApp {
 public:
 
     FilamentApp(void* nativeLayer, uint32_t width, uint32_t height)
-        : nativeLayer(nativeLayer), width(width), height(height) {}
+        : nativeLayer(nativeLayer), width(width), height(height), path() {}
     ~FilamentApp();
 
     void initialize();
     void render();
     void pan(float deltaX, float deltaY);
+    inline void set_path(const std::string& p) { path = p; }
 
 private:
 
     void updateRotation();
+    Texture* loadMap(Engine* engine, const char* name, bool sRGB = true);
 
     void* nativeLayer = nullptr;
     uint32_t width, height;
+    
+    std::string path;
 
     Engine* engine = nullptr;
     Renderer* renderer = nullptr;

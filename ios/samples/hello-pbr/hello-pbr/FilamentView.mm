@@ -47,6 +47,8 @@
 #endif
         CGRect nativeBounds = [[UIScreen mainScreen] nativeBounds];
         app = new FilamentApp((__bridge void*) self.layer, nativeBounds.size.width, nativeBounds.size.height);
+        NSString* bundlePath = [[NSBundle mainBundle]pathForResource:@"images" ofType:@"bundle"];
+        app->set_path([bundlePath UTF8String]);
         app->initialize();
         self.contentScaleFactor = UIScreen.mainScreen.nativeScale;
     }

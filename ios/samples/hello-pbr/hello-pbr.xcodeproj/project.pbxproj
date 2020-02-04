@@ -16,29 +16,113 @@
 		A963FEA59DDB33506FE61F8B02A73B6C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A17327655C031D575A522AD1F9C196E8 /* main.m */; };
 		D8BDF196DEE56F50D2D15167B4CCC77F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43FDC2D4E6776749006FF5E8870102A5 /* Main.storyboard */; };
 		DE3E149E4DAE874CAFE5B50758A83A6D /* FilamentView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 42B9073CE652C53E7F0A460285BB977D /* FilamentView.mm */; };
+		DF84DE2623E84F39007D12DD /* images.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DF84DE2523E84F39007D12DD /* images.bundle */; };
+		DF84DE3923E91475007D12DD /* libfilabridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE2723E91475007D12DD /* libfilabridge.a */; };
+		DF84DE3A23E91475007D12DD /* libfilaflat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE2823E91475007D12DD /* libfilaflat.a */; };
+		DF84DE3B23E91475007D12DD /* libshaders.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE2923E91475007D12DD /* libshaders.a */; };
+		DF84DE3C23E91475007D12DD /* libcamutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE2A23E91475007D12DD /* libcamutils.a */; };
+		DF84DE3D23E91475007D12DD /* libbackend.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE2B23E91475007D12DD /* libbackend.a */; };
+		DF84DE3E23E91475007D12DD /* librays.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE2C23E91475007D12DD /* librays.a */; };
+		DF84DE3F23E91475007D12DD /* libfilamat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE2D23E91475007D12DD /* libfilamat.a */; };
+		DF84DE4023E91475007D12DD /* libgltfio_resources.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE2E23E91475007D12DD /* libgltfio_resources.a */; };
+		DF84DE4123E91475007D12DD /* libgeometry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE2F23E91475007D12DD /* libgeometry.a */; };
+		DF84DE4223E91475007D12DD /* libutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE3023E91475007D12DD /* libutils.a */; };
+		DF84DE4323E91475007D12DD /* libfilament.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE3123E91475007D12DD /* libfilament.a */; };
+		DF84DE4423E91475007D12DD /* libgltfio_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE3223E91475007D12DD /* libgltfio_core.a */; };
+		DF84DE4523E91475007D12DD /* libibl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE3323E91475007D12DD /* libibl.a */; };
+		DF84DE4623E91475007D12DD /* libfilameshio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE3423E91475007D12DD /* libfilameshio.a */; };
+		DF84DE4723E91475007D12DD /* libmeshoptimizer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE3523E91475007D12DD /* libmeshoptimizer.a */; };
+		DF84DE4823E91475007D12DD /* libsmol-v.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE3623E91475007D12DD /* libsmol-v.a */; };
+		DF84DE4923E91475007D12DD /* libfilamat_lite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE3723E91475007D12DD /* libfilamat_lite.a */; };
+		DF84DE4A23E91475007D12DD /* libimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF84DE3823E91475007D12DD /* libimage.a */; };
 		F663C27E69235CFE83DF61587325ED71 /* FilamentApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F01D34676A81F3F367B9F6AFFA54E12A /* FilamentApp.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		17ADA23252FA61486B05D5BA85F69741 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		1CAE8879115ECEC53FA0F052F48A970B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		37CB2FCA6711AE57BD4B39F754C8F69D /* hello-pbr.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "hello-pbr.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		42B9073CE652C53E7F0A460285BB977D /* FilamentView.mm */ = {isa = PBXFileReference; path = FilamentView.mm; sourceTree = "<group>"; };
+		37CB2FCA6711AE57BD4B39F754C8F69D /* hello-pbr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "hello-pbr.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		42B9073CE652C53E7F0A460285BB977D /* FilamentView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FilamentView.mm; sourceTree = "<group>"; };
 		4618C7511DE661F89B1147340F67BE11 /* FilamentView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FilamentView.h; sourceTree = "<group>"; };
 		7D60AE7BAB964978FAA0C84C403E489A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7FE9A0CE98FB055F3478E1CCBC21EE6D /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		A17327655C031D575A522AD1F9C196E8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		A3680F594905261290AEDB79A15F7AB2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		AC02B019CB36611A7BCE5773FB111E50 /* Resources.S */ = {isa = PBXFileReference; path = Resources.S; sourceTree = "<group>"; };
-		ADF252527D202BB9D53E29C86DEEB0F3 /* clear_coat.mat */ = {isa = PBXFileReference; path = clear_coat.mat; sourceTree = "<group>"; };
+		AC02B019CB36611A7BCE5773FB111E50 /* Resources.S */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = Resources.S; sourceTree = "<group>"; };
+		ADF252527D202BB9D53E29C86DEEB0F3 /* clear_coat.mat */ = {isa = PBXFileReference; lastKnownFileType = text; path = clear_coat.mat; sourceTree = "<group>"; };
 		B35CDFC5B6E5142B5E57BE33045B4415 /* FilamentApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FilamentApp.h; sourceTree = "<group>"; };
-		D57C53C47A84D05D23B652786E68F509 /* CameraManipulator.cpp */ = {isa = PBXFileReference; path = CameraManipulator.cpp; sourceTree = "<group>"; };
+		D57C53C47A84D05D23B652786E68F509 /* CameraManipulator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CameraManipulator.cpp; sourceTree = "<group>"; };
 		DACB12BFCAAA3222E7D1E9BB80475894 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		DF84DE0123E84A13007D12DD /* libcamutils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcamutils.a; path = "../../../out/ios-debug/filament/lib/arm64/libcamutils.a"; sourceTree = "<group>"; };
+		DF84DE0223E84A13007D12DD /* libfilabridge.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilabridge.a; path = "../../../out/ios-debug/filament/lib/arm64/libfilabridge.a"; sourceTree = "<group>"; };
+		DF84DE0323E84A14007D12DD /* libgltfio_resources.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgltfio_resources.a; path = "../../../out/ios-debug/filament/lib/arm64/libgltfio_resources.a"; sourceTree = "<group>"; };
+		DF84DE0423E84A14007D12DD /* libsmol-v.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsmol-v.a"; path = "../../../out/ios-debug/filament/lib/arm64/libsmol-v.a"; sourceTree = "<group>"; };
+		DF84DE0523E84A14007D12DD /* libmeshoptimizer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmeshoptimizer.a; path = "../../../out/ios-debug/filament/lib/arm64/libmeshoptimizer.a"; sourceTree = "<group>"; };
+		DF84DE0623E84A14007D12DD /* libfilament.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilament.a; path = "../../../out/ios-debug/filament/lib/arm64/libfilament.a"; sourceTree = "<group>"; };
+		DF84DE0723E84A14007D12DD /* libutils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libutils.a; path = "../../../out/ios-debug/filament/lib/arm64/libutils.a"; sourceTree = "<group>"; };
+		DF84DE0823E84A14007D12DD /* libibl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libibl.a; path = "../../../out/ios-debug/filament/lib/arm64/libibl.a"; sourceTree = "<group>"; };
+		DF84DE0923E84A14007D12DD /* librays.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librays.a; path = "../../../out/ios-debug/filament/lib/arm64/librays.a"; sourceTree = "<group>"; };
+		DF84DE0A23E84A14007D12DD /* libfilameshio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilameshio.a; path = "../../../out/ios-debug/filament/lib/arm64/libfilameshio.a"; sourceTree = "<group>"; };
+		DF84DE0B23E84A14007D12DD /* libgltfio_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgltfio_core.a; path = "../../../out/ios-debug/filament/lib/arm64/libgltfio_core.a"; sourceTree = "<group>"; };
+		DF84DE0C23E84A14007D12DD /* libgeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeometry.a; path = "../../../out/ios-debug/filament/lib/arm64/libgeometry.a"; sourceTree = "<group>"; };
+		DF84DE0D23E84A14007D12DD /* libfilaflat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilaflat.a; path = "../../../out/ios-debug/filament/lib/arm64/libfilaflat.a"; sourceTree = "<group>"; };
+		DF84DE0E23E84A14007D12DD /* libimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libimage.a; path = "../../../out/ios-debug/filament/lib/arm64/libimage.a"; sourceTree = "<group>"; };
+		DF84DE0F23E84A14007D12DD /* libbackend.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackend.a; path = "../../../out/ios-debug/filament/lib/arm64/libbackend.a"; sourceTree = "<group>"; };
+		DF84DE1023E84A14007D12DD /* libfilamat_lite.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilamat_lite.a; path = "../../../out/ios-debug/filament/lib/arm64/libfilamat_lite.a"; sourceTree = "<group>"; };
+		DF84DE1123E84A14007D12DD /* libfilamat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilamat.a; path = "../../../out/ios-debug/filament/lib/arm64/libfilamat.a"; sourceTree = "<group>"; };
+		DF84DE1223E84A14007D12DD /* libshaders.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libshaders.a; path = "../../../out/ios-debug/filament/lib/arm64/libshaders.a"; sourceTree = "<group>"; };
+		DF84DE2523E84F39007D12DD /* images.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = images.bundle; sourceTree = "<group>"; };
+		DF84DE2723E91475007D12DD /* libfilabridge.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilabridge.a; path = ../filament/lib/arm64/libfilabridge.a; sourceTree = "<group>"; };
+		DF84DE2823E91475007D12DD /* libfilaflat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilaflat.a; path = ../filament/lib/arm64/libfilaflat.a; sourceTree = "<group>"; };
+		DF84DE2923E91475007D12DD /* libshaders.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libshaders.a; path = ../filament/lib/arm64/libshaders.a; sourceTree = "<group>"; };
+		DF84DE2A23E91475007D12DD /* libcamutils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcamutils.a; path = ../filament/lib/arm64/libcamutils.a; sourceTree = "<group>"; };
+		DF84DE2B23E91475007D12DD /* libbackend.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libbackend.a; path = ../filament/lib/arm64/libbackend.a; sourceTree = "<group>"; };
+		DF84DE2C23E91475007D12DD /* librays.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librays.a; path = ../filament/lib/arm64/librays.a; sourceTree = "<group>"; };
+		DF84DE2D23E91475007D12DD /* libfilamat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilamat.a; path = ../filament/lib/arm64/libfilamat.a; sourceTree = "<group>"; };
+		DF84DE2E23E91475007D12DD /* libgltfio_resources.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgltfio_resources.a; path = ../filament/lib/arm64/libgltfio_resources.a; sourceTree = "<group>"; };
+		DF84DE2F23E91475007D12DD /* libgeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgeometry.a; path = ../filament/lib/arm64/libgeometry.a; sourceTree = "<group>"; };
+		DF84DE3023E91475007D12DD /* libutils.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libutils.a; path = ../filament/lib/arm64/libutils.a; sourceTree = "<group>"; };
+		DF84DE3123E91475007D12DD /* libfilament.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilament.a; path = ../filament/lib/arm64/libfilament.a; sourceTree = "<group>"; };
+		DF84DE3223E91475007D12DD /* libgltfio_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgltfio_core.a; path = ../filament/lib/arm64/libgltfio_core.a; sourceTree = "<group>"; };
+		DF84DE3323E91475007D12DD /* libibl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libibl.a; path = ../filament/lib/arm64/libibl.a; sourceTree = "<group>"; };
+		DF84DE3423E91475007D12DD /* libfilameshio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilameshio.a; path = ../filament/lib/arm64/libfilameshio.a; sourceTree = "<group>"; };
+		DF84DE3523E91475007D12DD /* libmeshoptimizer.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmeshoptimizer.a; path = ../filament/lib/arm64/libmeshoptimizer.a; sourceTree = "<group>"; };
+		DF84DE3623E91475007D12DD /* libsmol-v.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsmol-v.a"; path = "../filament/lib/arm64/libsmol-v.a"; sourceTree = "<group>"; };
+		DF84DE3723E91475007D12DD /* libfilamat_lite.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfilamat_lite.a; path = ../filament/lib/arm64/libfilamat_lite.a; sourceTree = "<group>"; };
+		DF84DE3823E91475007D12DD /* libimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libimage.a; path = ../filament/lib/arm64/libimage.a; sourceTree = "<group>"; };
 		E176563EAAB0B36EFA7D67FD93FFC7A9 /* CameraManipulator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CameraManipulator.h; sourceTree = "<group>"; };
 		EC2A85E8863E17F68089B19862C04BD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		ED2321CED4601521B7D1D8492A43AF1E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		F01D34676A81F3F367B9F6AFFA54E12A /* FilamentApp.cpp */ = {isa = PBXFileReference; path = FilamentApp.cpp; sourceTree = "<group>"; };
+		F01D34676A81F3F367B9F6AFFA54E12A /* FilamentApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FilamentApp.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DF84DDFF23E849E0007D12DD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF84DE3923E91475007D12DD /* libfilabridge.a in Frameworks */,
+				DF84DE3A23E91475007D12DD /* libfilaflat.a in Frameworks */,
+				DF84DE3B23E91475007D12DD /* libshaders.a in Frameworks */,
+				DF84DE3C23E91475007D12DD /* libcamutils.a in Frameworks */,
+				DF84DE3D23E91475007D12DD /* libbackend.a in Frameworks */,
+				DF84DE3E23E91475007D12DD /* librays.a in Frameworks */,
+				DF84DE3F23E91475007D12DD /* libfilamat.a in Frameworks */,
+				DF84DE4023E91475007D12DD /* libgltfio_resources.a in Frameworks */,
+				DF84DE4123E91475007D12DD /* libgeometry.a in Frameworks */,
+				DF84DE4223E91475007D12DD /* libutils.a in Frameworks */,
+				DF84DE4323E91475007D12DD /* libfilament.a in Frameworks */,
+				DF84DE4423E91475007D12DD /* libgltfio_core.a in Frameworks */,
+				DF84DE4523E91475007D12DD /* libibl.a in Frameworks */,
+				DF84DE4623E91475007D12DD /* libfilameshio.a in Frameworks */,
+				DF84DE4723E91475007D12DD /* libmeshoptimizer.a in Frameworks */,
+				DF84DE4823E91475007D12DD /* libsmol-v.a in Frameworks */,
+				DF84DE4923E91475007D12DD /* libfilamat_lite.a in Frameworks */,
+				DF84DE4A23E91475007D12DD /* libimage.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		4A44033C70281A0FC58A64FE24F43E4F /* hello-pbr */ = {
@@ -60,6 +144,7 @@
 				AC02B019CB36611A7BCE5773FB111E50 /* Resources.S */,
 				17ADA23252FA61486B05D5BA85F69741 /* ViewController.h */,
 				DACB12BFCAAA3222E7D1E9BB80475894 /* ViewController.m */,
+				DF84DE2523E84F39007D12DD /* images.bundle */,
 			);
 			path = "hello-pbr";
 			sourceTree = "<group>";
@@ -70,6 +155,7 @@
 				4A44033C70281A0FC58A64FE24F43E4F /* hello-pbr */,
 				D92946BE29B34E951A7E0714F8414C19 /* Materials */,
 				A90A4582D4144797492F5C0806B8A1F5 /* Products */,
+				DF84DE0023E84A13007D12DD /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -89,6 +175,49 @@
 			path = Materials;
 			sourceTree = "<group>";
 		};
+		DF84DE0023E84A13007D12DD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DF84DE2B23E91475007D12DD /* libbackend.a */,
+				DF84DE2A23E91475007D12DD /* libcamutils.a */,
+				DF84DE2723E91475007D12DD /* libfilabridge.a */,
+				DF84DE2823E91475007D12DD /* libfilaflat.a */,
+				DF84DE3723E91475007D12DD /* libfilamat_lite.a */,
+				DF84DE2D23E91475007D12DD /* libfilamat.a */,
+				DF84DE3123E91475007D12DD /* libfilament.a */,
+				DF84DE3423E91475007D12DD /* libfilameshio.a */,
+				DF84DE2F23E91475007D12DD /* libgeometry.a */,
+				DF84DE3223E91475007D12DD /* libgltfio_core.a */,
+				DF84DE2E23E91475007D12DD /* libgltfio_resources.a */,
+				DF84DE3323E91475007D12DD /* libibl.a */,
+				DF84DE3823E91475007D12DD /* libimage.a */,
+				DF84DE3523E91475007D12DD /* libmeshoptimizer.a */,
+				DF84DE2C23E91475007D12DD /* librays.a */,
+				DF84DE2923E91475007D12DD /* libshaders.a */,
+				DF84DE3623E91475007D12DD /* libsmol-v.a */,
+				DF84DE3023E91475007D12DD /* libutils.a */,
+				DF84DE0F23E84A14007D12DD /* libbackend.a */,
+				DF84DE0123E84A13007D12DD /* libcamutils.a */,
+				DF84DE0223E84A13007D12DD /* libfilabridge.a */,
+				DF84DE0D23E84A14007D12DD /* libfilaflat.a */,
+				DF84DE1023E84A14007D12DD /* libfilamat_lite.a */,
+				DF84DE1123E84A14007D12DD /* libfilamat.a */,
+				DF84DE0623E84A14007D12DD /* libfilament.a */,
+				DF84DE0A23E84A14007D12DD /* libfilameshio.a */,
+				DF84DE0C23E84A14007D12DD /* libgeometry.a */,
+				DF84DE0B23E84A14007D12DD /* libgltfio_core.a */,
+				DF84DE0323E84A14007D12DD /* libgltfio_resources.a */,
+				DF84DE0823E84A14007D12DD /* libibl.a */,
+				DF84DE0E23E84A14007D12DD /* libimage.a */,
+				DF84DE0523E84A14007D12DD /* libmeshoptimizer.a */,
+				DF84DE0923E84A14007D12DD /* librays.a */,
+				DF84DE1223E84A14007D12DD /* libshaders.a */,
+				DF84DE0423E84A14007D12DD /* libsmol-v.a */,
+				DF84DE0723E84A14007D12DD /* libutils.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -99,6 +228,7 @@
 				18BC4E25ED5FC66EC7B77F9770FE2CD9 /* Build Resources */,
 				4EAE126B59B0A66AD866406A57C145C3 /* Sources */,
 				4C132EE193B59194A5C7572B28C6B385 /* Resources */,
+				DF84DDFF23E849E0007D12DD /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -122,6 +252,7 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				en,
 				Base,
 			);
 			mainGroup = 8B171658B4A1227B9CA444595AE38803;
@@ -141,6 +272,7 @@
 				3C183B77078317A8605B572491C58C3A /* Assets.xcassets in Resources */,
 				76A422929373887929994B3EE3063683 /* LaunchScreen.storyboard in Resources */,
 				D8BDF196DEE56F50D2D15167B4CCC77F /* Main.storyboard in Resources */,
+				DF84DE2623E84F39007D12DD /* images.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,21 +401,25 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 58CJAXYU38;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"FILAMENT_APP_USE_OPENGL=1",
 					"$(inherited)",
 				);
 				HEADER_SEARCH_PATHS = (
-					"../../../out/ios-debug/filament/include",
+					../filament/include,
 					generated,
+					../../../third_party/stb,
 				);
 				INFOPLIST_FILE = "hello-pbr/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"../../../out/ios-debug/filament/lib/$(CURRENT_ARCH)",
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "../../../out/ios-debug/filament/lib/$(CURRENT_ARCH)";
 				OTHER_LDFLAGS = (
 					"-lfilament",
 					"-lbackend",
@@ -298,6 +434,7 @@
 					"-limage",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.hello-pbr";
+				PROVISIONING_PROFILE_SPECIFIER = 20190606_1_wildcard_provisioning;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -309,6 +446,8 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 58CJAXYU38;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"FILAMENT_APP_USE_OPENGL=1",
@@ -320,10 +459,11 @@
 				);
 				INFOPLIST_FILE = "hello-pbr/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"../../../out/ios-release/filament/lib/$(CURRENT_ARCH)",
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "../../../out/ios-release/filament/lib/$(CURRENT_ARCH)";
 				OTHER_LDFLAGS = (
 					"-lfilament",
 					"-lbackend",
@@ -338,6 +478,7 @@
 					"-limage",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.hello-pbr";
+				PROVISIONING_PROFILE_SPECIFIER = 20190606_1_wildcard_provisioning;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -349,6 +490,8 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 58CJAXYU38;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"FILAMENT_APP_USE_METAL=1",
@@ -360,10 +503,11 @@
 				);
 				INFOPLIST_FILE = "hello-pbr/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"../../../out/ios-debug/filament/lib/$(CURRENT_ARCH)",
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "../../../out/ios-debug/filament/lib/$(CURRENT_ARCH)";
 				OTHER_LDFLAGS = (
 					"-lfilament",
 					"-lbackend",
@@ -378,6 +522,7 @@
 					"-limage",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.hello-pbr";
+				PROVISIONING_PROFILE_SPECIFIER = 20190606_1_wildcard_provisioning;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -491,6 +636,8 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 58CJAXYU38;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"FILAMENT_APP_USE_METAL=1",
@@ -502,10 +649,11 @@
 				);
 				INFOPLIST_FILE = "hello-pbr/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"../../../out/ios-release/filament/lib/$(CURRENT_ARCH)",
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "../../../out/ios-release/filament/lib/$(CURRENT_ARCH)";
 				OTHER_LDFLAGS = (
 					"-lfilament",
 					"-lbackend",
@@ -520,6 +668,7 @@
 					"-limage",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "google.filament.hello-pbr";
+				PROVISIONING_PROFILE_SPECIFIER = 20190606_1_wildcard_provisioning;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

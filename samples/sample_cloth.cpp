@@ -176,9 +176,9 @@ Texture* loadMap(Engine* engine, const char* name, bool sRGB = true) {
 }
 
 static void setup(Engine* engine, View* view, Scene* scene) {
-    Texture* normal = loadMap(engine, "normal.png", false);
-    Texture* basecolor = loadMap(engine, "basecolor.png");
-    Texture* roughness = loadMap(engine, "roughness.png", false);
+    Texture* normal = loadMap(engine, "/Users/zhangyan62/baidu/github/filament/cmake-build-debug/samples/assets/models/cloth/normal.png", false);
+    Texture* basecolor = loadMap(engine, "/Users/zhangyan62/baidu/github/filament/cmake-build-debug/samples/assets/models/cloth/basecolor.png");
+    Texture* roughness = loadMap(engine, "/Users/zhangyan62/baidu/github/filament/cmake-build-debug/samples/assets/models/cloth/roughness.png", false);
 
     if (!basecolor || !normal || !roughness) {
         std::cout << "Need basecolor.png, normal.png and roughness.png" << std::endl;

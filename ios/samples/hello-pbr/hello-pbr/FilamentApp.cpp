@@ -18,12 +18,18 @@
 
 #include <filament/Material.h>
 #include <filament/Viewport.h>
+#include <filamat/MaterialBuilder.h>
+#include <filament/TextureSampler.h>
 
 #include <filameshio/MeshReader.h>
 
+#include <utils/Path.h>
+
 #include <image/KtxUtility.h>
+#include <stb_image.h>
 
 #include <sstream>
+#include <iostream>
 
 // This file is generated via the "Run Script" build phase and contains the mesh, material, and IBL
 // textures this app uses.
@@ -31,6 +37,11 @@
 
 using namespace filament;
 using namespace filamesh;
+using namespace filamat;
+using namespace utils;
+
+static const Material* g_material;
+static MeshReader::MaterialRegistry g_materialInstances;
 
 void FilamentApp::initialize() {
 #if FILAMENT_APP_USE_OPENGL
@@ -45,6 +56,14 @@ void FilamentApp::initialize() {
 
     filaView = engine->createView();
 
+    Texture* normal = loadMap(engine, std::string(path + "/normal.png").c_str(), false);
+    Texture* basecolor = loadMap(engine, std::string(path + "/basecolor.png").c_str());
+    Texture* roughness = loadMap(engine, std::string(path + "/roughness.png").c_str(), false);
+    if (!normal || !basecolor || !roughness) {
+        std::cout << "can't load texture" << std::endl;
+        return;
+    }
+    
     image::KtxBundle* iblBundle = new image::KtxBundle(RESOURCES_VENETIAN_CROSSROADS_2K_IBL_DATA,
             RESOURCES_VENETIAN_CROSSROADS_2K_IBL_SIZE);
     filament::math::float3 harmonics[9];
@@ -75,14 +94,51 @@ void FilamentApp::initialize() {
         .build(*engine, app.sun);
     scene->addEntity(app.sun);
 
-    app.mat = Material::Builder()
-        .package(RESOURCES_CLEAR_COAT_DATA, RESOURCES_CLEAR_COAT_SIZE)
-        .build(*engine);
+    MaterialBuilder::init();
+    MaterialBuilder builder = MaterialBuilder()
+            .name("DefaultMaterial")
+            .require(VertexAttribute::UV0)
+            .parameter(MaterialBuilder::SamplerType::SAMPLER_2D, "normalMap")
+            .parameter(MaterialBuilder::SamplerType::SAMPLER_2D, "basecolorMap")
+            .parameter(MaterialBuilder::SamplerType::SAMPLER_2D, "roughnessMap")
+            .material(R"SHADER(
+                void material(inout MaterialInputs material) {
+                    vec2 uv = getUV0() * 2.0;
+                    material.normal = texture(materialParams_normalMap, uv).xyz * 2.0 - 1.0;
+                    prepareMaterial(material);
 
-    app.materialInstance = app.mat->createInstance();
-    MeshReader::Mesh mesh = MeshReader::loadMeshFromBuffer(engine, RESOURCES_MATERIAL_SPHERE_DATA,
-            nullptr, nullptr, app.materialInstance);
-    app.materialInstance->setParameter("baseColor", RgbType::sRGB, {0.71f, 0.0f, 0.0f});
+                    vec3 baseColor = texture(materialParams_basecolorMap, uv).rgb;
+                    float luma = dot(baseColor, vec3(0.2126, 0.7152, 0.0722));
+
+                    material.baseColor.rgb = baseColor;
+                    material.roughness = texture(materialParams_roughnessMap, uv).r;
+                    material.sheenColor = vec3(luma) * 0.5;
+                }
+            )SHADER")
+            .shading(Shading::CLOTH)
+            .platform(MaterialBuilder::Platform::MOBILE)
+            .optimization(MaterialBuilder::Optimization::NONE)
+            .targetApi(MaterialBuilder::TargetApi::OPENGL);
+    
+    Package pkg = builder.build();
+    g_material = Material::Builder().package(pkg.getData(), pkg.getSize())
+            .build(*engine);
+    const utils::CString defaultMaterialName("DefaultMaterial");
+    g_materialInstances.registerMaterialInstance(defaultMaterialName, g_material->createInstance());
+
+    TextureSampler sampler(TextureSampler::MinFilter::LINEAR_MIPMAP_LINEAR,
+            TextureSampler::MagFilter::LINEAR, TextureSampler::WrapMode::REPEAT);
+    sampler.setAnisotropy(8.0f);
+    g_materialInstances.getMaterialInstance(defaultMaterialName)->setParameter("normalMap", normal, sampler);
+    g_materialInstances.getMaterialInstance(defaultMaterialName)->setParameter("basecolorMap", basecolor, sampler);
+    g_materialInstances.getMaterialInstance(defaultMaterialName)->setParameter("roughnessMap", roughness, sampler);
+    
+    utils::Path p(path + "/filacloth");
+    MeshReader::Mesh mesh = MeshReader::loadMeshFromFile(engine, p, g_materialInstances);
+    
+//    MeshReader::Mesh mesh = MeshReader::loadMeshFromBuffer(engine, RESOURCES_MATERIAL_SPHERE_DATA,
+//            nullptr, nullptr, g_materialInstances.getMaterialInstance(defaultMaterialName));
+//    g_materialInstances.getMaterialInstance(defaultMaterialName)->setParameter("baseColor", RgbType::sRGB, {0.71f, 0.0f, 0.0f});
 
     app.renderable = mesh.renderable;
     scene->addEntity(app.renderable);
@@ -129,4 +185,31 @@ FilamentApp::~FilamentApp() {
     engine->destroy(camera);
     engine->destroy(swapChain);
     engine->destroy(&engine);
+}
+
+Texture* FilamentApp::loadMap(Engine* engine, const char* name, bool sRGB) {
+    Path path(name);
+    if (path.exists()) {
+        int w, h, n;
+        unsigned char* data = stbi_load(path.getAbsolutePath().c_str(), &w, &h, &n, 3);
+        if (data != nullptr) {
+            Texture* map = Texture::Builder()
+                    .width(uint32_t(w))
+                    .height(uint32_t(h))
+                    .levels(0xff)
+                    .format(sRGB ? Texture::InternalFormat::SRGB8 : Texture::InternalFormat::RGB8)
+                    .build(*engine);
+            Texture::PixelBufferDescriptor buffer(data, size_t(w * h * 3),
+                    Texture::Format::RGB, Texture::Type::UBYTE,
+                    (Texture::PixelBufferDescriptor::Callback) &stbi_image_free);
+            map->setImage(*engine, 0, std::move(buffer));
+//            map->generateMipmaps(*engine);
+            return map;
+        } else {
+            std::cout << "The map " << path << " could not be loaded" << std::endl;
+        }
+    } else {
+        std::cout << "The map " << path << " does not exist" << std::endl;
+    }
+    return nullptr;
 }
